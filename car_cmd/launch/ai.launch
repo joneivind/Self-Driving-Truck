@@ -1,0 +1,28 @@
+<launch>
+
+  <!--JOYSTICK-->
+  <node pkg="joy" type="joy_node" name="joy_node">
+  </node>
+
+  <!--SERIAL COM-->
+  <node pkg="rosserial_python" type="serial_node.py" name="serial_node" output="screen">
+    <param name="port" value="/dev/ttyACM0"/>
+  </node>
+
+  <!--CAR COMMANDER-->
+  <node pkg="car_cmd" type="car_cmd.py" name="car_cmd"><!-- output="screen"-->
+  </node>
+  
+  <!--ALIVE MSG-->
+  <node pkg="heartbeat_broadcaster" type="heartbeat_broadcaster.py" name="heartbeat_broadcaster">
+  </node>
+
+  <!--AI STEERING-->
+  <node pkg="dnn_steering_node" type="drive.py" name="dnn_driving">
+  </node>
+  
+  <!--CAN BUS-->
+  <node pkg="can_charger_node" type="can_charger_node.py" name="can_charger_node" output="screen">
+  </node>
+
+  </launch>
