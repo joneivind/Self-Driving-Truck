@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+# ROS Stanley Steering path tracker
+# By Jon Eivind Stranden @ NTNU 2019
+# Using a modified version of the tracking algorithm implemented by Atsushi Sakai: https://github.com/AtsushiSakai/PythonRobotics
+
 import math
 import os 
 import numpy as np
@@ -39,20 +43,8 @@ state = State(x=0.0, y=0.0, yaw=0.0, v=0.0)
 
 
 def stanley_control(state, cx, cy, cyaw):
-    """
-    Stanley steering control.
 
-    :param state: (State object)
-    :param cx: ([float])
-    :param cy: ([float])
-    :param cyaw: ([float])
-    :param last_target_idx: (int)
-    :return: (float, int)
-    """
     current_target_idx, error_front_axle = calc_target_index(state, cx, cy)
-
-    #if last_target_idx >= current_target_idx:
-    #    current_target_idx = last_target_idx
 
     # theta_e corrects the heading error
     theta_e = normalize_angle(cyaw[current_target_idx] - state.yaw)
@@ -70,12 +62,7 @@ def stanley_control(state, cx, cy, cyaw):
 
 
 def normalize_angle(angle):
-    """
-    Normalize an angle to [-pi, pi].
 
-    :param angle: (float)
-    :return: (float) Angle in radian in [-pi, pi]
-    """
     while angle > np.pi:
         angle -= 2.0 * np.pi
 
@@ -86,14 +73,7 @@ def normalize_angle(angle):
 
 
 def calc_target_index(state, cx, cy):
-    """
-    Compute index in the trajectory list of the target.
 
-    :param state: (State object)
-    :param cx: [float]
-    :param cy: [float]
-    :return: (int, float)
-    """
     # Calc front axle position
     fx = state.x + L * np.cos(state.yaw)
     fy = state.y + L * np.sin(state.yaw)

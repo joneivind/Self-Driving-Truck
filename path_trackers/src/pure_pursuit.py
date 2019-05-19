@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+# ROS Pure pursuit path tracker
+# By Jon Eivind Stranden @ NTNU 2019
+# Using a modified version of the tracking algorithm implemented by Atsushi Sakai: https://github.com/AtsushiSakai/PythonRobotics
+
 import rospy
 import math
 import os 
