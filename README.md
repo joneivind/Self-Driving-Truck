@@ -32,7 +32,7 @@ $ roslaunch car_cmd run.launch
 |esc_vel_pub|Estimates velocity from controller command (sensorless)|
 |heartbeat_broadcaster|Publishes alive msgs to microcontroller|
 |path_trackers|Pure Pursuit and Stanley steering controllers|
-|rplidar_pwm_ros|Modified RPlidar ROS node with PWM motor control
+|rplidar_pwm_ros|Modified RPlidar ROS node with PWM motor control (https://github.com/davidbsp/rplidar_ros)
 |waypoint_logger|ROS node for recording a new path
 
 #### Also required:
