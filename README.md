@@ -1,2 +1,47 @@
-# SelfDrivingTruck
-Self-driving smallscale truck with wireless charging - Master thesis @ NTNU 2019
+
+# SINTEF Self-Driving Truck w/induction charger
+This repository contains code for a self-driving smallscale truck with wireless inductive charging.
+It is part of a master thesis in cybernetics and robotics at NTNU 2019, and contains code for three different path following methods:
+- SLAM with Pure Pursuit (and Stanley steering) steering controller
+- Supervised Deep Learning steering controller with OpenCV
+- Lane Detector with steering controller (PID) and OpenCV
+
+The system is based on Ubuntu 16.04 with ROS Kinetic running on a Nvidia Jetson TX2. The truck itself is controlled by a Teensy 3.2 microcontroller. Other important components are the RPlidar A8M8 lidar and the Logitech C922 webcam.
+
+#### Start-up
+Connect to the `Sintef_truck` wifi-network with password `JetsonTX2`:
+```sh
+$ ssh nvidia@10.42.0.1  
+```
+Password is `JetsonTX2`
+
+To start the autonomous system:
+```sh
+$ roslaunch car_cmd run.launch  
+```
+
+### ROS nodes 
+| Folder | Functionality |
+| ------ | ------ |
+| ackermann_odom | Estimates odometry with LiDAR and IMU |
+|aruco_detector|For detecting ArUco markers with camera, also contains generator|
+|can_charger_node|ROS CAN bus interface|
+|car_cmd|Central node for publishing car commands to microcontroller|
+|car_gui|Graphical User Interface for status overviews|
+|car_setup_tf|TF broadcaster (base_link to laser)|
+|cv_lanetracker|OpenCV Lane Detector for center offset measure|
+|dnn_steering_node|Deep Learning steering controller, also contains trainer and data logger|
+|esc_vel_pub|Estimates velocity from controller command (sensorless)|
+|heartbeat_broadcaster|Publishes alive msgs to microcontroller|
+|path_trackers|Pure Pursuit and Stanley steering controllers|
+|rplidar_pwm_ros|Modified RPlidar ROS node with PWM motor control
+|waypoint_logger|ROS node for recording a new path
+
+#### Also required:
+| Name | Link |
+| ------ | ------ |
+| Hector SLAM | [http://wiki.ros.org/hector_slam](http://wiki.ros.org/hector_slam) |
+|Joy|[http://wiki.ros.org/joy](http://wiki.ros.org/joy)|
+|ROS Serial|[http://wiki.ros.org/rosserial](http://wiki.ros.org/rosserial)|
+
+![self-driving truck](https://github.com/joneivind/Self-Driving-Truck/blob/master/truck.png)
