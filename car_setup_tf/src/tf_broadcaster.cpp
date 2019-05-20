@@ -1,6 +1,17 @@
 #include <ros/ros.h>
 #include <tf/transform_broadcaster.h>
 
+/*
+* ROS tf broadcaster node **************************
+ 
+ For publishing TF transform between truck 
+ (base_link) and LiDAR (laser).
+
+ By Jon Eivind Stranden @ NTNU 2019
+
+****************************************************
+*/
+
 int main(int argc, char** argv){
   ros::init(argc, argv, "car_tf_publisher");
   ros::NodeHandle n;

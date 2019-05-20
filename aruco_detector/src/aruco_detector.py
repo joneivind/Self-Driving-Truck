@@ -1,10 +1,31 @@
 #!/usr/bin/env python
 
+'''
+* ROS ArUco detector node **************************
+ 
+ Detects ArUco markers with id[1 2] using OpenCV.
+ Publishes the id of the detected marker on a topic.
+
+ By Jon Eivind Stranden @ NTNU 2019
+
+****************************************************
+'''
+
 import numpy as np
 import cv2
 import cv2.aruco as aruco
 import rospy
 from std_msgs.msg import Int16
+
+# Camera parameters
+w_res = 640
+h_res = 360
+device_id = 1
+
+# Camera calibration settings
+mtx = np.array([[1537.673020, 0.000000, 902.827327], [0.000000, 1586.529937, 545.745303], [0.000000, 0.000000, 1.000000]])
+dist = np.array([0.064465, -0.138072, 0.001351, -0.001640, 0.000000])
+
 
 def aruco_marker_detector(img):
 
@@ -33,15 +54,17 @@ def aruco_marker_detector(img):
 
 def main():
 
-    cap = cv2.VideoCapture(1) # Select camera device
-    cap.set(3,640) # Set resolution of camera input x,y
-    cap.set(4,360)
-    #cap.set(cv2.CAP_PROP_AUTOFOCUS, 0) # turn the autofocus off
-    #cap.set(cv2.CAP_PROP_AUTO_EXPOSURE, 0.25) # turn of auto exposure    
+    global w_res
+    global h_res
+    global device_id
+    global mtx
+    global dist
 
-    # Camera calibration settings
-    mtx = np.array([[1537.673020, 0.000000, 902.827327], [0.000000, 1586.529937, 545.745303], [0.000000, 0.000000, 1.000000]])
-    dist = np.array([0.064465, -0.138072, 0.001351, -0.001640, 0.000000])
+    cap = cv2.VideoCapture(device_id) # Select camera device
+    cap.set(3,w_res) # Set resolution of camera input x,y
+    cap.set(4,h_res)
+    #cap.set(cv2.CAP_PROP_AUTOFOCUS, 0) # turn the autofocus off
+    #cap.set(cv2.CAP_PROP_AUTO_EXPOSURE, 0.25) # turn of auto exposure
 
     charge_sign_marker_id = 1
     charge_stop_sign_marker_id = 2

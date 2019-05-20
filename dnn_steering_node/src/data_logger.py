@@ -1,7 +1,16 @@
 #!/usr/bin/env python
 
-# ROS node for logging training data
-# By Jon Eivind Stranden 2019
+'''
+* Deep learning data logger ************************
+ 
+ For logging training data with ROS and OpenCV.
+ Data is saved as images and .csv
+ Require OpenCV and ROS.
+
+ By Jon Eivind Stranden @ NTNU 2019
+
+****************************************************
+'''
 
 import cv2
 from time import gmtime, strftime
@@ -28,6 +37,7 @@ def joy_callback(data):
 
 
 def shutdown():
+    
     file.close()
     cap = cv2.VideoCapture(1)
     cap.release()

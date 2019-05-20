@@ -1,8 +1,15 @@
 #!/usr/bin/env python
 
-# ROS Odometry broadcaster for SINTEF RC Truck with wireless charging
-# The node uses a mix of velocity commands from the car controller and angular velocity from an IMU to estimate odometry, without the use of wheel sensors
-# By Jon Eivind Stranden @ NTNU 2019
+'''
+* ROS Velocity broadcaster node ********************
+ 
+ Publishes the current velocity calculated from the
+ electronic speed controller msg (sensorless).
+
+ By Jon Eivind Stranden @ NTNU 2019
+
+****************************************************
+'''
 
 import rospy
 from std_msgs.msg import Float64

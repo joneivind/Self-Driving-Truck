@@ -1,8 +1,15 @@
 #!/usr/bin/env python
 
-# ROS Waypoint path logger
-# Saves and publishes waypoints (with pose) as a ROS path msg 
-# By Jon Eivind Stranden @ NTNU 2019
+'''
+* ROS Waypoint path logger node *******************
+ 
+ Saves and publishes waypoints (with pose) as 
+ a ROS path msg.
+
+ By Jon Eivind Stranden @ NTNU 2019
+
+****************************************************
+'''
 
 import rospy
 import numpy as np

@@ -1,8 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*- 
 
-# Car Controller node for SINTEF RC Truck with wireless charging
-# By Jon Eivind Stranden @ NTNU 2019
+'''
+* ROS Car Controller node **************************
+ 
+ Central node for publishing steering and velocity 
+ commands to serial node on RC truck.
+
+ By Jon Eivind Stranden @ NTNU 2019
+
+****************************************************
+'''
 
 from math import tan, sqrt, atan2
 import numpy as np
@@ -76,20 +84,10 @@ charger_active = False
 obstacle_detected = False # detect variable
 current_steering_angle = 0.0
 
-# For terminal menu
-class bcolors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
-    WHITE = '\033[96m'
-
 
 def joy_callback(data):
+
+    # Get joystick commands
 
     global joy_steering_angle
     global joy_vel
@@ -135,6 +133,8 @@ def joy_callback(data):
 
 
 def dnn_controller_callback(data):
+    
+    # Get steering angle from deep learning controller
 
     global dnn_steering_angle
     global max_steering_angle
@@ -143,6 +143,8 @@ def dnn_controller_callback(data):
 
 
 def slam_vel_callback(data):
+
+    # Get velocity from LiDAR
 
     global prev_dist_x
     global prev_dist_y
@@ -160,6 +162,8 @@ def slam_vel_callback(data):
 
 
 def move_base_callback(data):
+
+    # Velocity and steering commands from move_base (ROS navi stack)
     
     global move_base_velocity
     global move_base_steering_angle
@@ -171,17 +175,23 @@ def move_base_callback(data):
 
 def pure_pursuit_callback(data):
 
+    # Pure Pursuit steering angle
+
     global pp_steering_angle
     pp_steering_angle = data.angular.z
 
 
 def lane_center_offset_callback(data):
 
+    # OpenCV lane detector center offset [cm]
+
     global lane_center_offset_cm
     lane_center_offset_cm = data.data
 
 
 def wp_logger_status_callback(data):
+
+    # Status of waypoint (path) logger
 
     global wp_logger_active
     
@@ -195,6 +205,8 @@ def wp_logger_status_callback(data):
 
 def charger_status_callback(data):
 
+    # Status of wireless charger
+
     global charger_active
     
     charger_status = data.data
@@ -204,7 +216,11 @@ def charger_status_callback(data):
     else:
         charger_active = False
 
-def laser_callback(data):
+
+def obstacle_callback(data):
+
+    # Obstacle detector using LiDAR
+    # Detection area changes with steering angle
 
     global obstacle_detector_enabled
     global obstacle_detect_dist
@@ -214,7 +230,6 @@ def laser_callback(data):
 
     num_detected = 0
     
-    # Detection area changes with steering angle
     steering_offset = int((current_steering_angle-90)/5)
 
     ranges = np.array([])
@@ -236,6 +251,8 @@ def laser_callback(data):
 
 def can_bus_callback(data):
 
+    # Charger status from CAN bus
+
     global charger_active
 
     if data.data[1] > 0:
@@ -247,6 +264,7 @@ def can_bus_callback(data):
 def steering_angle_to_servo(angle):
 
     # Convert radian angle to valid servo output
+
     global max_steering_angle
 
     servo_output = -(angle/max_steering_angle)*90 + 90
@@ -257,6 +275,7 @@ def steering_angle_to_servo(angle):
 def gear_selector_to_servo(gear):
 
     # Gear select to valid servo output
+
     if gear is 2:
         gear_cmd = 180.0 # Top gear
     elif gear is 1:
@@ -268,6 +287,8 @@ def gear_selector_to_servo(gear):
 
 
 def PIDControl(target, current):
+
+    # P-controller (for now)
 
     global Kp
 
@@ -323,7 +344,7 @@ def controller():
     rospy.Subscriber("dnn_controller", Twist, dnn_controller_callback)
     rospy.Subscriber("wp_logger_active", Int16, wp_logger_status_callback)
     rospy.Subscriber("aruco_charger_status", Int16, charger_status_callback)
-    rospy.Subscriber("scan", LaserScan, laser_callback)
+    rospy.Subscriber("scan", LaserScan, obstacle_callback)
     rospy.Subscriber("CAN_bus", Int64MultiArray, can_bus_callback) 
 
     rate = rospy.Rate(10) # hz

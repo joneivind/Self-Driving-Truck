@@ -1,5 +1,18 @@
 #!/usr/bin/env python
 
+'''
+* ROS GUI node *************************************
+ 
+ Graphical User Interface for SINTEF RC truck with
+ wireless charging. Displays speed, charge and other
+ parameters like driving mode and gear. 
+ Requires ROS, Pillow and Tkinter.
+
+ By Jon Eivind Stranden @ NTNU 2019
+
+****************************************************
+'''
+
 from Tkinter import *
 from math import cos, sin, pi
 import numpy as np
@@ -13,8 +26,6 @@ from sensor_msgs.msg import Joy
 from filters import *
 import os
 
-
-###### GUI ######
 
 dirpath = os.path.dirname(os.path.abspath(__file__))
 
@@ -49,17 +60,15 @@ img4 = PIL.ImageTk.PhotoImage(img4)
 # Create a new canvas
 can = Canvas(root, width=900, height=600, bg='#000', bd=0, highlightthickness=0)
 
-# background img
+# Background img
 can.create_image(410, 250, image=img) 
 
-# charger icon
+# Charger icon
 charge_img = can.create_image(410, 250, image=img4) 
 
-# Meters
+# Gauges
 line_left = can.create_line(193, 243, 193+cos(np.deg2rad(180))*123, 243+sin(np.deg2rad(0))*(-123), fill="#fff", width=4, smooth=True) # speedo
 line_right = can.create_line(626, 243, 626+cos(np.deg2rad(180))*123, 243+sin(np.deg2rad(0))*(-123), fill="#fff", width=4, smooth=True) # ampmeter
-#can.create_text(193, 343, fill="#666", font="Ubuntu 8", text="STEERING")
-#line_amp = can.create_line(193, 243, 193+cos(np.deg2rad(180-50))*123, 243+sin(np.deg2rad(-50))*(-123), fill="#ccc", width=3, smooth=True) # steering
 
 # Foreground img
 can.create_image(410, 250, image=img2) 
@@ -82,22 +91,13 @@ charge_status = can.create_text(410, 215, fill="#ccc", font="Ubuntu 18 bold", te
 can.create_text(410, 250, fill="#666", font="Ubuntu 8 bold", text="DEAD SWITCH")
 dead_sw_status = can.create_text(410, 275, fill="#ccc", font="Ubuntu 18 bold", text="OFF")
 
-# Text amp
-#can.create_text(410, 325, fill="#666", font="Ubuntu 8 bold", text="CURRENT")
-#amp_status = can.create_text(410, 360, fill="#ccc", font="Ubuntu 40 bold", text="0")
-#can.create_text(410, 395, fill="#ccc", font="Ubuntu 8 bold", text="MILLIAMP")
-
 can.pack()
-
-
-
-###### ROS ######
 
 # Set up node
 rospy.init_node('gui_node', anonymous=True)
 
 # Set max speed and charge
-max_speed = 1.5 # m/s limit for speedometer
+max_speed = 1.5 # [m/s] limit for speedometer
 max_m_amp = 10000.0 # limit for milliamp meter
 
 # Variables
@@ -177,28 +177,33 @@ def ros_main():
         steering_ang_smooth, filter_data_1 = low_pass_filter_avg(current_steering_ang, filter_data_1, window_size)
         speed_smooth, filter_data_2 = low_pass_filter_avg(current_speed, filter_data_2, window_size)
         amp_smooth, filter_data_3 = low_pass_filter_avg(current_amp, filter_data_3, window_size)
+
+        # Cap speed
+        if speed_smooth < 0.0:
+        	speed_smooth = 0.0
         
-        # Update needles
+        # Update gauges
         can.coords(line_left, 193, 243, 193 + cos(np.deg2rad(180-43+(266*speed_smooth/max_speed)))*123, 243 + sin(np.deg2rad(-43+(266*speed_smooth/max_speed)))*(-123))
         can.coords(line_right, 626, 243, 626 + cos(np.deg2rad(180-43+(266*amp_smooth/max_m_amp)+132))*123, 243 + sin(np.deg2rad(-43+(266*amp_smooth/max_m_amp)+132))*(-123))
 
         # Update text
         can.itemconfigure(speed, text=int(round(speed_smooth*3.6*14-(0.4*14),0)))        
         can.itemconfigure(gear, text=str(round((amp_smooth/1000.0),1)))
-        #can.itemconfigure(amp_status, text=int(round(amp_smooth,0)))
         
         if current_drv_mode is 1 or current_drv_mode is 5:
                 can.itemconfigure(drv_mode, text='MANUAL')
-        elif current_drv_mode is 4 or current_drv_mode is 6:
-                can.itemconfigure(drv_mode, text='RECORD')
         elif current_drv_mode is 3:
+                can.itemconfigure(drv_mode, text='RECORD')
+        elif current_drv_mode is 4 or current_drv_mode is 6:
                 can.itemconfigure(drv_mode, text='AUTO')
+        elif current_drv_mode is 2:
+                can.itemconfigure(drv_mode, text='AI')
 
         if current_amp > 0:
                 can.itemconfigure(charge_status, text='OFF', fill='#fff')
                 can.itemconfigure(charge_img, image=img4)
         else:
-                can.itemconfigure(charge_status, text='ON', fill='yellow')
+                can.itemconfigure(charge_status, text='ON', fill='#fff')
                 can.itemconfigure(charge_img, image=img3)
         
         if current_dead_sw_status is 0:

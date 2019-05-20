@@ -1,8 +1,17 @@
 #!/usr/bin/env python
 
-# ROS Stanley Steering path tracker
-# By Jon Eivind Stranden @ NTNU 2019
-# Using a modified version of the tracking algorithm implemented by Atsushi Sakai: https://github.com/AtsushiSakai/PythonRobotics
+'''
+* ROS Stanley Steering node ************************
+ 
+ Stanley Steering path tracker for following a path.
+ 
+ Stanley Steering algorithm adapted from: 
+ https://github.com/AtsushiSakai/PythonRobotics
+
+ By Jon Eivind Stranden @ NTNU 2019
+
+****************************************************
+'''
 
 import math
 import os 
@@ -20,15 +29,15 @@ import tf
 ### Tuning settings #################
 
 k = 0.1  # Cross track error gain
-L = 0.28  # Wheel base of vehicle [m]
-max_steering_angle = 0.44926 # Rad
+wheelbase_length = 0.28  # [m]
+max_steering_angle = 0.44926 # [rad]
 
 #####################################
 
 # Path points with yaw storage
-cx = []
-cy = []
-cyaw = []
+course_x = []
+course_y = []
+course_yaw = []
 
 class State:
 
@@ -42,12 +51,12 @@ class State:
 state = State(x=0.0, y=0.0, yaw=0.0, v=0.0)
 
 
-def stanley_control(state, cx, cy, cyaw):
+def stanley_control(state, course_x, course_y, course_yaw):
 
-    current_target_idx, error_front_axle = calc_target_index(state, cx, cy)
+    current_target_ind, error_front_axle = calc_target_index(state, course_x, course_y)
 
     # theta_e corrects the heading error
-    theta_e = normalize_angle(cyaw[current_target_idx] - state.yaw)
+    theta_e = normalize_angle(course_yaw[current_target_ind] - state.yaw)
     
     # theta_d corrects the cross track error
     theta_d = np.arctan2(k * error_front_axle, state.v)
@@ -58,7 +67,7 @@ def stanley_control(state, cx, cy, cyaw):
     # Cap max steering wheel angle
     delta = np.clip(delta, -max_steering_angle, max_steering_angle)
 
-    return delta, current_target_idx
+    return delta, current_target_ind
 
 
 def normalize_angle(angle):
@@ -72,21 +81,21 @@ def normalize_angle(angle):
     return angle
 
 
-def calc_target_index(state, cx, cy):
+def calc_target_index(state, course_x, course_y):
 
     # Calc front axle position
-    fx = state.x + L * np.cos(state.yaw)
-    fy = state.y + L * np.sin(state.yaw)
+    front_x = state.x + wheelbase_length * np.cos(state.yaw)
+    front_y = state.y + wheelbase_length * np.sin(state.yaw)
 
     # Search nearest point index
-    dx = [fx - icx for icx in cx]
-    dy = [fy - icy for icy in cy]
+    dx = [front_x - icx for icx in course_x]
+    dy = [front_y - icy for icy in course_y]
     d = [np.sqrt(idx ** 2 + idy ** 2) for (idx, idy) in zip(dx, dy)]
     error_front_axle = min(d)
     target_idx = d.index(error_front_axle)
 
     target_yaw = normalize_angle(np.arctan2(
-        fy - cy[target_idx], fx - cx[target_idx]) - state.yaw)
+        front_y - course_y[target_idx], front_x - course_x[target_idx]) - state.yaw)
     if target_yaw > 0.0:
         error_front_axle = - error_front_axle
 
@@ -108,24 +117,24 @@ def update_state_callback(data):
 
 def path_callback(data):
     
-    global cx
-    global cy
-    global cyaw
+    global course_x
+    global course_y
+    global course_yaw
 
-    px = []
-    py = []
-    pyaw = []
+    path_x = []
+    path_y = []
+    path_yaw = []
 
     for i, pose in enumerate(data.poses):
-        px.append(data.poses[i].pose.position.x)
-        py.append(data.poses[i].pose.position.y)
+        path_x.append(data.poses[i].pose.position.x)
+        path_y.append(data.poses[i].pose.position.y)
         orientation_list = [data.poses[i].pose.orientation.x, data.poses[i].pose.orientation.y, data.poses[i].pose.orientation.z, data.poses[i].pose.orientation.w]
         _, _, yaw = euler_from_quaternion(orientation_list)
-        pyaw.append(yaw)
+        path_yaw.append(yaw)
 
-    cx = px
-    cy = py
-    cyaw = pyaw
+    course_x = path_x
+    course_y = path_y
+    course_yaw = path_yaw
 
 
 def vel_callback(data):
@@ -137,16 +146,16 @@ def vel_callback(data):
 def main():
 
     global state
-    global cx
-    global cy
-    global cyaw
+    global course_x
+    global course_y
+    global course_yaw
 
     # init node
     rospy.init_node('stanley_controller')
     rate = rospy.Rate(10) # hz
 
     # Publish
-    pub = rospy.Publisher('pure_pursuit', Twist, queue_size=10)
+    pub = rospy.Publisher('stanley_steering', Twist, queue_size=10)
 
     # Get current state of truck
     rospy.Subscriber('slam_out_pose', PoseStamped, update_state_callback, queue_size=10)
@@ -159,9 +168,9 @@ def main():
     while not rospy.is_shutdown():
 
         # Get steering angle
-        if len(cx) != 0:
-            steering_angle, target_ind = stanley_control(state, cx, cy, cyaw)
-            tf_br.sendTransform((cx[target_ind], cy[target_ind], 0.0), quaternion_from_euler(0.0, 0.0, 3.1415), rospy.Time.now() , "look_ahead_point", "wp_path")
+        if len(course_x) != 0:
+            steering_angle, target_ind = stanley_control(state, course_x, course_y, course_yaw)
+            tf_br.sendTransform((course_x[target_ind], course_y[target_ind], 0.0), quaternion_from_euler(0.0, 0.0, 3.1415), rospy.Time.now() , "look_ahead_point", "wp_path")
         else:
             steering_angle = 0.0
             target_ind = 0

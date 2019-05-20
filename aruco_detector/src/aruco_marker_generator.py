@@ -1,17 +1,28 @@
+#!/usr/bin/env python
+
+'''
+* ArUco marker generator **************************
+ 
+ For creating new aruco markers. Requires OpenCV.
+
+ By Jon Eivind Stranden @ NTNU 2019
+
+****************************************************
+'''
+
 import numpy as np
 import cv2
 import cv2.aruco as aruco
 
-# Set the id of the marker (int)
-generated_marker_id = 2
+# Set marker id here (int)
+marker_id = 2
 
-# Select type of aruco marker (size)
+# Set size and type of aruco marker, ex 2X2, 5X5
 aruco_dict = aruco.Dictionary_get(aruco.DICT_5X5_1000)
 
-# Create an image from the marker
-# the last param is the total image size
-img = aruco.drawMarker(aruco_dict, generated_marker_id, 1700)
-cv2.imwrite("marker_id_" + str(generated_marker_id) + ".jpg", img)
+# Generate a marker image, last param is filesize
+img = aruco.drawMarker(aruco_dict, marker_id, 1700)
+cv2.imwrite("marker_id_" + str(marker_id) + ".jpg", img)
 cv2.imshow('frame', img)
 
 # Exit on any key

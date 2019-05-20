@@ -1,10 +1,21 @@
 #!/usr/bin/env python
 
-# ROS/OpenCV Advanced lane detector with graphical overlay
-# Publishes the lane center offset [cm] on ROS topic: /car_vision/lane_center_offset_cm
-# Contains an ArUco marker detector for added overlay 
-# ROS functionality and center offset measure added by Jon Eivind Stranden
-# Lane detection code courtesy of https://github.com/vamsiramakrishnan/AdvancedLaneLines
+'''
+* ROS lane detector node ******************************
+ 
+ ROS/OpenCV lane detector with graphical overlay.
+ Publishes the lane center offset [cm] on ROS topic.
+ Also contains an ArUco marker detector. 
+ ROS functionality and center offset measure added 
+ by Jon Eivind Stranden. 
+
+ Most lane detection code courtesy of:
+ https://github.com/vamsiramakrishnan/AdvancedLaneLines
+
+ By Jon Eivind Stranden @ NTNU 2019
+
+********************************************************
+'''
 
 import cv2
 import cv2.aruco as aruco
@@ -69,8 +80,9 @@ dist = np.array([0.09702126218642344, -0.1836878268546886, 0.01359685879119158, 
 offset_from_lane_center_in_cm = 0.0
 
 
-# For filtering out the black parts of the image
 def filter_img(image):
+
+    # For filtering out the black parts of the image
 
     image = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
     #frame = cv2.medianBlur(frame,7)
@@ -90,8 +102,9 @@ def filter_img(image):
     return res
 
 
-# Get offset in meters from center of lane
 def get_lane_center_offset(left_x, right_x, left_y, right_y, img_):
+    
+    # Get offset in meters from center of lane
 
     m_per_x = (0.3/img_.shape[1])
     m_per_y = (0.23/img_.shape[0])
@@ -130,6 +143,18 @@ def get_lane_center_offset(left_x, right_x, left_y, right_y, img_):
 
     return img_, offset_cm
 
+
+'''
+
+* CITE *********************************************************************
+
+*    Content of some functions has been modified
+
+*    Title: AdvancedLaneLines
+*    Author: Vamsi Ramakrishnan
+*    Date: Aug 2017
+*    Availability: https://github.com/vamsiramakrishnan/AdvancedLaneLines
+'''
 
 # Undistort Images 
 def undistort_image(mtx_, dist_, img_):
@@ -661,10 +686,6 @@ def process_video(img):
     warped = perspective_transform(m, undistorted_img)
     binary_warped = filter_img(warped)
     
-    #return binary_warped
-    #cv2.imshow('frame2',warped)
-    #cv2.imshow('frame3',binary_warped)
-    
     # Lane Search
     # Polynomial Search if Lane is Found
     if IsLaneFound:
@@ -793,6 +814,9 @@ def process_video(img):
 
     return output
 
+'''
+* END CITE *****************************************************************
+'''
 
 def aruco_marker_detector(img):
 
@@ -819,7 +843,7 @@ def aruco_marker_detector(img):
     return img
 
 
-'''
+
 def main():
     
     global offset_from_lane_center_in_cm
@@ -896,4 +920,4 @@ if __name__ == "__main__":
     # When everything done, release the capture
     cap.release()
     cv2.destroyAllWindows()
-
+'''

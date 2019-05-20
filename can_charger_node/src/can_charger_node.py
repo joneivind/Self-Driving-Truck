@@ -1,6 +1,18 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+'''
+* ROS CAN node *************************************
+ 
+ CAN interface to ROS. Reads status msgs from 
+ charging system via CAN bus, and publishes results 
+ on relevant topics.
+
+ By Jon Eivind Stranden @ NTNU 2019
+
+****************************************************
+'''
+
 import can
 import rospy
 import struct
@@ -21,7 +33,7 @@ def CAN_recv():
     pub_cc = rospy.Publisher('CAN_bus/charge_current', Int64MultiArray, queue_size=10)
     pub_bv = rospy.Publisher('CAN_bus/battery_voltage', Int64MultiArray, queue_size=10)
     
-    # Create new
+    # Create new msgs
     can_msg_bat_curr = Int64MultiArray()
     can_msg_bat_curr.data = [0,0]
     
@@ -35,7 +47,7 @@ def CAN_recv():
 
         message = bus.recv() # Wait for new CAN message
         
-        # Publish the CAN message
+        # Publish msgs
         if message is not None: 
             
             if message.arbitration_id is 16: # Battery current

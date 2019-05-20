@@ -1,9 +1,18 @@
 #!/usr/bin/env python
 
-# Deep learning training script
-# By Jon Eivind Stranden 2019
-# Network model same as this blog post https://medium.com/@harvitronix/training-a-deep-learning-model-to-steer-a-car-in-99-lines-of-code-ba94e0456e6a
+'''
+* Deep learning training script *********************
+ 
+ For training a deep learning model with image and steering data.
+ The output of the model is a corresponding steering angle.
 
+ Based on:
+ https://medium.com/@harvitronix/training-a-deep-learning-model-to-steer-a-car-in-99-lines-of-code-ba94e0456e6a
+
+ By Jon Eivind Stranden @ NTNU 2019
+
+****************************************************
+'''
 
 import csv, random, numpy as np
 from keras.models import load_model, Sequential

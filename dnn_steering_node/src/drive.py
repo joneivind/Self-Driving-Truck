@@ -1,7 +1,16 @@
 #!/usr/bin/env python
 
-# Deep learning driving script
-# By Jon Eivind Stranden 2019
+'''
+* Deep learning driving script *********************
+ 
+ Driving truck autonomously with help of camera 
+ and deep learning network model.
+ Require OpenCV and ROS.
+
+ By Jon Eivind Stranden @ NTNU 2019
+
+****************************************************
+'''
 
 from keras.models import load_model
 from keras.preprocessing.image import img_to_array, load_img

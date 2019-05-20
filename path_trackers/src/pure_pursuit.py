@@ -1,8 +1,17 @@
 #!/usr/bin/env python
 
-# ROS Pure pursuit path tracker
-# By Jon Eivind Stranden @ NTNU 2019
-# Using a modified version of the tracking algorithm implemented by Atsushi Sakai: https://github.com/AtsushiSakai/PythonRobotics
+'''
+* ROS Pure Pursuit node ****************************
+ 
+ Pure Pursuit path tracker for following a path.
+ 
+ Pure Pursuit algorithm adapted from: 
+ https://github.com/AtsushiSakai/PythonRobotics
+
+ By Jon Eivind Stranden @ NTNU 2019
+
+****************************************************
+'''
 
 import rospy
 import math
@@ -18,15 +27,15 @@ import tf
 ### Tuning settings #############################
 
 k = 0.8  # Look forward gain (Dynamic look-ahead)
-Lfc = 0.6  # Look-ahead distance
-L = 0.28  # wheel base of vehicle [m]
+look_ahead_dist = 0.6  # Look-ahead distance
+wheelbase_length = 0.28  # wheel base of vehicle [m]
 max_steering_angle = 0.44926 # rad
 
 #################################################
 
 # Path point storage
-cx = []
-cy = []
+course_x = []
+course_y = []
 
 class State:
 
@@ -40,32 +49,30 @@ class State:
 state = State(x=0.0, y=0.0, yaw=0.0, v=0.0)
 
 
-def pure_pursuit_control(state, cx, cy):
+def pure_pursuit_control(state, course_x, course_y):
 
-    ind = calc_target_index(state, cx, cy)
+    # Get waypoint target index
+    ind = calc_target_index(state, course_x, course_y)
 
-    #if pind >= ind:
-    #    ind = pind
-
-    if ind < len(cx):
-        tx = cx[ind]
-        ty = cy[ind]
+    if ind < len(course_x):
+        target_x = course_x[ind]
+        target_y = course_y[ind]
     else:
-        tx = cx[-1]
-        ty = cy[-1]
-        ind = len(cx) - 1
+        target_x = course_x[-1]
+        target_y = course_y[-1]
+        ind = len(course_x) - 1
 
     # Calc angle alpha between the vehicle heading vector and the look-ahead vector
-    alpha = math.atan2(ty - state.y, tx - state.x) - (state.yaw)
+    alpha = math.atan2(target_y - state.y, target_x - state.x) - (state.yaw)
 
     if state.v < 0:  # back
         alpha = math.pi - alpha
 
     # Dynamic look-ahead distance
-    Lf = k * abs(state.v) + Lfc
+    dyn_look_ahead_dist = k * abs(state.v) + look_ahead_dist
 
     # Calc steering wheel angle delta
-    delta = math.atan2(2.0 * L * math.sin(alpha) / Lf, 1.0)
+    delta = math.atan2(2.0 * wheelbase_length * math.sin(alpha) / dyn_look_ahead_dist, 1.0)
 
     # Cap max steering wheel angle
     delta = np.clip(delta, -max_steering_angle, max_steering_angle)
@@ -73,23 +80,23 @@ def pure_pursuit_control(state, cx, cy):
     return delta, ind
 
 
-def calc_target_index(state, cx, cy):
+def calc_target_index(state, course_x, course_y):
 
     # search nearest point index
-    dx = [state.x - icx for icx in cx]
-    dy = [state.y - icy for icy in cy]
+    dx = [state.x - icx for icx in course_x]
+    dy = [state.y - icy for icy in course_y]
     d = [abs(math.sqrt(idx ** 2 + idy ** 2)) for (idx, idy) in zip(dx, dy)]
     ind = d.index(min(d))
-    L = 0.0
+    wheelbase_length = 0.0
 
     # Dynamic look-ahead distance
-    Lf = k * state.v + Lfc
+    dyn_look_ahead_dist = k * state.v + look_ahead_dist
 
     # search look ahead target point index
-    while Lf > L and (ind + 1) < len(cx):
-        dx = cx[ind + 1] - cx[ind]
-        dy = cy[ind + 1] - cy[ind]
-        L += math.sqrt(dx ** 2 + dy ** 2)
+    while dyn_look_ahead_dist > wheelbase_length and (ind + 1) < len(course_x):
+        dx = course_x[ind + 1] - course_x[ind]
+        dy = course_y[ind + 1] - course_y[ind]
+        wheelbase_length += math.sqrt(dx ** 2 + dy ** 2)
         ind += 1
 
     return ind
@@ -110,18 +117,18 @@ def update_state_callback(data):
 
 def path_callback(data):
     
-    global cx
-    global cy
+    global course_x
+    global course_y
 
-    px = []
-    py = []
+    path_x = []
+    path_y = []
 
     for i, pose in enumerate(data.poses):
-        px.append(data.poses[i].pose.position.x)
-        py.append(data.poses[i].pose.position.y)
+        path_x.append(data.poses[i].pose.position.x)
+        path_y.append(data.poses[i].pose.position.y)
 
-    cx = px
-    cy = py
+    course_x = path_x
+    course_y = path_y
 
 
 def vel_callback(data):
@@ -133,8 +140,8 @@ def vel_callback(data):
 def main():
 
     global state
-    global cx
-    global cy
+    global course_x
+    global course_y
 
     # init node
     rospy.init_node('pure_pursuit')
@@ -155,10 +162,10 @@ def main():
     while not rospy.is_shutdown():
 
         # Get steering angle
-        if len(cx) != 0:
-            steering_angle, target_ind = pure_pursuit_control(state, cx, cy)
+        if len(course_x) != 0:
+            steering_angle, target_ind = pure_pursuit_control(state, course_x, course_y)
             if target_ind is not None:
-                tf_br.sendTransform((cx[target_ind], cy[target_ind], 0.0), quaternion_from_euler(0.0, 0.0, 3.1415), rospy.Time.now() , "look_ahead_point", "wp_path")
+                tf_br.sendTransform((course_x[target_ind], course_y[target_ind], 0.0), quaternion_from_euler(0.0, 0.0, 3.1415), rospy.Time.now() , "look_ahead_point", "wp_path")
         else:
             steering_angle = 0.0
             target_ind = 0

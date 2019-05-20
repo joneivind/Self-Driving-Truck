@@ -1,7 +1,15 @@
 #!/usr/bin/env python
 
-# ROS Heartbeat broadcaster for SINTEF RC Truck with wireless charging
-# By Jon Eivind Stranden @ NTNU 2019
+'''
+* ROS Heartbeat broadcaster node *******************
+ 
+ Publishes alive msgs to the Teensy microcontroller
+ to tell that the computer is running.
+
+ By Jon Eivind Stranden @ NTNU 2019
+
+****************************************************
+'''
 
 import rospy
 from std_msgs.msg import Int16

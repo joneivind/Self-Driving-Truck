@@ -1,3 +1,14 @@
+#!/usr/bin/env python
+
+'''
+* ROS ArUco detector test node *********************
+ 
+ Detects ArUco markers with id[1 2] using OpenCV.
+
+ By Jon Eivind Stranden @ NTNU 2019
+
+****************************************************
+'''
 
 import numpy as np
 import cv2

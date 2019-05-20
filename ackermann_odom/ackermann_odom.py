@@ -1,8 +1,16 @@
 #!/usr/bin/env python
 
-# ROS Odometry broadcaster for SINTEF RC Truck with wireless charging
-# The node uses a mix of velocity commands from the car controller and angular velocity from an IMU to estimate odometry, without the use of wheel sensors
-# By Jon Eivind Stranden @ NTNU 2019
+'''
+* ROS Odometry broadcaster node ********************
+ 
+ Estimates odometry using velocity commands from 
+ the car controller and angular velocity from IMU, 
+ without the use of wheel sensors.
+
+ By Jon Eivind Stranden @ NTNU 2019
+
+****************************************************
+'''
 
 import rospy
 from math import tan, cos, sin
@@ -12,13 +20,8 @@ from tf.transformations import euler_from_quaternion
 from sensor_msgs.msg import Imu
 import tf
 
-# settings
-wheelbase_ = 0.28 # length of wheelbase, axle to axle [m]
-
 # variables
-esc_speed_val = 90.0 # init value for electronic speed controller (0-180)
-steering_servo_val = 90.0 # init value for steering servo (0-180)
-yaw_imu = 0.0 # yaw value placeholder
+esc_speed_val = 90.0
 ang_vel_z_imu = 0.0
 init_x_pos = 0.0
 init_y_pos = 0.0
@@ -29,23 +32,16 @@ new_init_pose = False
 def servo_input_callback(data):
     
     global esc_speed_val
-    global steering_servo_val
 
     # Get speed and steering values from car controller
     esc_speed_val = data.linear.x
-    steering_servo_val = data.angular.z
 
 
 def imu_callback(data):
 
-    global yaw_imu
     global ang_vel_z_imu
 
-    # Convert quaternions from IMU orientation to euler to get yaw
-    orientation_list = [data.orientation.x, data.orientation.y, data.orientation.z, data.orientation.w]
-    roll, pitch, yaw = euler_from_quaternion(orientation_list)    
-    yaw_imu = yaw
-
+    # Get angular velocity in z-direction
     ang_vel_z_imu = data.angular_velocity.z
 
 
@@ -56,9 +52,11 @@ def initpose_callback(data):
     global init_yaw
     global new_init_pose
 
+    # Get position
     init_x_pos = data.pose.pose.position.x
     init_y_pos = data.pose.pose.position.y
 
+    # Get yaw
     orientation_list = [data.pose.pose.orientation.x, data.pose.pose.orientation.y, data.pose.pose.orientation.z, data.pose.pose.orientation.w]
     roll, pitch, yaw = euler_from_quaternion(orientation_list)   
     init_yaw = yaw
@@ -68,10 +66,7 @@ def initpose_callback(data):
 
 def main():
 
-    global wheelbase_
     global esc_speed_val
-    global steering_servo_val
-    global yaw_imu
     global ang_vel_z_imu
     global init_x_pos
     global init_y_pos
@@ -164,13 +159,12 @@ def main():
         # Publish msgs
         odom_pub.publish(odom_msg)
 
-
         # Odom transform to
         tf_br.sendTransform((x_, y_, 0.0), (0.0, 0.0, sin(yaw_/2.0), cos(yaw_/2.0)), rospy.Time.now() , "base_link", "odom")
-	tf_br.sendTransform((0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 1.0), rospy.Time.now() , "odom", "map")
+        tf_br.sendTransform((0.0, 0.0, 0.0), (0.0, 0.0, 0.0, 1.0), rospy.Time.now() , "odom", "map")
 
         rate.sleep()
-
+        
 
 if __name__ == '__main__':
     try:
