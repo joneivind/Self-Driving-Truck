@@ -9,13 +9,7 @@ It is part of a master thesis in cybernetics and robotics at NTNU 2019, and cont
 The system is based on Ubuntu 16.04 with ROS Kinetic running on a Nvidia Jetson TX2. The truck itself is controlled by a Teensy 3.2 microcontroller. Other important components are the RPlidar A8M8 lidar and the Logitech C922 webcam.
 
 #### Start-up
-Connect to the `Sintef_truck` wifi-network with password `JetsonTX2`:
-```sh
-$ ssh nvidia@10.42.0.1  
-```
-Password is `JetsonTX2`
-
-To start the autonomous system:
+To start the autonomous system, type:
 ```sh
 $ roslaunch car_cmd run.launch  
 ```
