@@ -1,5 +1,6 @@
 
 # SINTEF Self-Driving Truck w/induction charger
+![self-driving truck](https://github.com/joneivind/Self-Driving-Truck/blob/master/truck.png)
 This repository contains code for a self-driving smallscale truck with wireless inductive charging.
 It is part of a master thesis in cybernetics and robotics at NTNU 2019, and contains code for three different path following methods:
 - SLAM with Pure Pursuit (and Stanley steering) steering controller
@@ -37,5 +38,3 @@ $ roslaunch car_cmd run.launch
 | Hector SLAM | [http://wiki.ros.org/hector_slam](http://wiki.ros.org/hector_slam) |
 |Joy|[http://wiki.ros.org/joy](http://wiki.ros.org/joy)|
 |ROS Serial|[http://wiki.ros.org/rosserial](http://wiki.ros.org/rosserial)|
-
-![self-driving truck](https://github.com/joneivind/Self-Driving-Truck/blob/master/truck.png)
