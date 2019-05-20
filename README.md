@@ -1,6 +1,8 @@
 
 # SINTEF Self-Driving Truck w/induction charger
-![self-driving truck](https://github.com/joneivind/Self-Driving-Truck/blob/master/truck.png)
+<p align="center">
+  <img src="https://github.com/joneivind/Self-Driving-Truck/blob/master/truck.png">
+</p>
 
 This repository contains code for a self-driving smallscale truck with wireless inductive charging.
 It is part of a master thesis in cybernetics and robotics at NTNU 2019, and contains code for three different path following methods:
