@@ -56,17 +56,14 @@ boolean short_time_passed = false;
 
 // For looping LED sequences
 void led_control(int mode){
-
   if((millis() - long_loop_timer) >= 1000.0){
     long_loop_timer = millis();
     long_time_passed = !long_time_passed;
   }
-
   if((millis() - short_loop_timer) >= 100.0){
     short_loop_timer = millis();
     short_time_passed = !short_time_passed;
   }
-
   // Off
   if(mode==0){
     for (int i=0; i < leds.numPixels(); i++) {
@@ -74,7 +71,6 @@ void led_control(int mode){
     }
     leds.show();
   } 
-
   // Green
   else if(mode==1){
     for (int i=0; i < leds.numPixels(); i++) {
@@ -94,7 +90,6 @@ void led_control(int mode){
     }
     leds.show();
   } 
-
   // Blue
   else if(mode==3){
     for (int i=0; i < leds.numPixels(); i++) {
@@ -114,7 +109,6 @@ void led_control(int mode){
     }
     leds.show();
   } 
-
   // Red
   else if(mode==5){
     for (int i=0; i < leds.numPixels(); i++) {
@@ -133,8 +127,7 @@ void led_control(int mode){
       leds.setPixel(i, BLACK);  
     }
     leds.show();
-  } 
-  
+  }   
   long_time_passed = false;
   short_time_passed = false;
 }
