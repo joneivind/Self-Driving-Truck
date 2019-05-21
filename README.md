@@ -21,7 +21,8 @@ $ roslaunch car_cmd run.launch
 ### ROS nodes 
 | Folder | Functionality |
 | ------ | ------ |
-| ackermann_odom | Estimates odometry with LiDAR and IMU |
+|Teensy|Contains the code for the Teensy microcontroller|
+|ackermann_odom | Estimates odometry with LiDAR and IMU |
 |aruco_detector|For detecting ArUco markers with camera, also contains generator|
 |can_charger_node|ROS CAN bus interface|
 |car_cmd|Central node for publishing car commands to microcontroller|
