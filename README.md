@@ -28,6 +28,7 @@ $ roslaunch car_cmd run.launch
 |car_gui|Graphical User Interface for status overviews|
 |car_setup_tf|TF broadcaster (base_link to laser)|
 |cv_lanetracker|OpenCV Lane Detector for center offset measure|
+|dnn_simulator|Deep Learning controller for Udacity Simulator, with trainer|
 |dnn_steering_node|Deep Learning steering controller, also contains trainer and data logger|
 |esc_vel_pub|Estimates velocity from controller command (sensorless)|
 |heartbeat_broadcaster|Publishes alive msgs to microcontroller|
