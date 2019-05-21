@@ -1,8 +1,6 @@
-
 // Car control node for ROS
 // Jon Eivind Stranden 2019 @ NTNU
 // Part of Master thesis - Self-driving truck with wireless charging (SINTEF 2019)
-
 
 #include <PWMServo.h>
 #include <Wire.h>
@@ -15,32 +13,28 @@
 #include <std_msgs/Int16.h>
 
 //// IMU ////
-
 BNO080 IMU;
 uint32_t last_time = 0;
 
-
 //// Servo ////
-
 PWMServo steering_servo, throttle_servo, gear_servo;  // Servo objects
 
-//Define PWM pins
+// Define PWM pins
 int steering_servo_pin = 20;
 int throttle_servo_pin = 21;
 int gear_servo_pin = 22;
 
-//Variables for storing servo positions
+// Variables for storing servo positions
 int steering_pos = 90; 
 int throttle_pos = 90;
 int gear_pos = 90; 
 
-
 //// LED STRIP ////
-
-// Pin 2: led strip
+// Note: led strip is connected to pin2
 const int num_leds = 4;
 int led_mode = 0;
 
+// LED colors
 #define RED    0xFF0000
 #define GREEN  0x00FF00
 #define BLUE   0x0000FF
@@ -60,6 +54,7 @@ float short_loop_timer = millis();
 boolean long_time_passed = false;
 boolean short_time_passed = false;
 
+// For looping LED sequences
 void led_control(int mode){
 
   if((millis() - long_loop_timer) >= 1000.0){
@@ -146,12 +141,11 @@ void led_control(int mode){
 
 
 //// ROS ////
-
 ros::NodeHandle nh;
-
 ros::Time last_heartbeat_received;
 bool is_jetson_running = true;
 
+// ROS callback
 void controlCallback(const geometry_msgs::Twist& twist_msg){
   steering_pos  = twist_msg.angular.z;
   throttle_pos = twist_msg.linear.x;
@@ -177,7 +171,6 @@ ros::Subscriber<std_msgs::Int16> sub_led("led_mode", &ledCallback );
 
 
 void setup() {
-  
 
   // Start leds
   leds.begin();
@@ -210,7 +203,6 @@ void setup() {
   nh.subscribe(sub_twist);
   nh.subscribe(sub_heartbeat);
   nh.subscribe(sub_led);
-
   
 }
 
