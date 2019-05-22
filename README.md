@@ -24,7 +24,7 @@ $ roslaunch car_cmd run.launch
 |Teensy|Contains the code for the Teensy microcontroller|
 |ackermann_odom | Estimates odometry with LiDAR and IMU |
 |aruco_detector|For detecting ArUco markers with camera, also contains generator|
-|can_charger_node|ROS CAN bus interface|
+|can_charger_node|ROS CAN bus interface for Jetson TX2|
 |car_cmd|Central node for publishing car commands to microcontroller|
 |car_gui|Graphical User Interface for status overviews|
 |car_setup_tf|TF broadcaster (base_link to laser)|
