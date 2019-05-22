@@ -46,4 +46,4 @@ $ roslaunch car_cmd run.launch
 |ROS Serial|[http://wiki.ros.org/rosserial](http://wiki.ros.org/rosserial)|
 
 
-##### By Jon Eivind Stranden 2019.
+##### Created for SINTEF Energy Research by Jon Eivind Stranden @ NTNU 2019
