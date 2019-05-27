@@ -52,6 +52,7 @@ state = State(x=0.0, y=0.0, yaw=0.0, v=0.0)
 
 
 def stanley_control(state, course_x, course_y, course_yaw):
+    # adapted from: https://github.com/AtsushiSakai/PythonRobotics/tree/master/PathTracking/stanley_controller
 
     current_target_ind, error_front_axle = calc_target_index(state, course_x, course_y)
 
@@ -71,6 +72,7 @@ def stanley_control(state, course_x, course_y, course_yaw):
 
 
 def normalize_angle(angle):
+    # adapted from: https://github.com/AtsushiSakai/PythonRobotics/tree/master/PathTracking/stanley_controller
 
     while angle > np.pi:
         angle -= 2.0 * np.pi
@@ -82,6 +84,7 @@ def normalize_angle(angle):
 
 
 def calc_target_index(state, course_x, course_y):
+    # adapted from: https://github.com/AtsushiSakai/PythonRobotics/tree/master/PathTracking/stanley_controller
 
     # Calc front axle position
     front_x = state.x + wheelbase_length * np.cos(state.yaw)
