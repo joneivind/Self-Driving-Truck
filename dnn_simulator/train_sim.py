@@ -1,11 +1,8 @@
-""""
-With admiration for and inspiration from:
-    https://github.com/dolaameng/Udacity-SDC_Behavior-Cloning/
-    https://devblogs.nvidia.com/parallelforall/deep-learning-self-driving-cars/
-    https://chatbotslife.com/using-augmentation-to-mimic-human-driving-496b569760a9
-    https://www.reddit.com/r/MachineLearning/comments/5qbjz7/p_an_autonomous_vehicle_steering_model_in_99/dcyphps/
-Accompanies the blog post at https://medium.com/@harvitronix/training-a-deep-learning-model-to-steer-a-car-in-99-lines-of-code-ba94e0456e6a
-"""
+'''
+Based on:
+https://blog.coast.ai/training-a-deep-learning-model-to-steer-a-car-in-99-lines-of-code-ba94e0456e6a
+'''
+
 import csv, random, numpy as np
 import matplotlib.pyplot as plt
 from keras.models import load_model, Sequential
