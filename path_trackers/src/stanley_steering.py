@@ -6,7 +6,7 @@
  Stanley Steering path tracker for following a path.
  
  Stanley Steering algorithm adapted from: 
- https://github.com/AtsushiSakai/PythonRobotics
+ https://github.com/AtsushiSakai/PythonRobotics/tree/master/PathTracking/stanley_controller
 
  By Jon Eivind Stranden @ NTNU 2019
 
