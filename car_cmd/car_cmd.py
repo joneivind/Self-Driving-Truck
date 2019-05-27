@@ -431,7 +431,7 @@ def controller():
             if dead_switch is True and obstacle_detected is False:
 
                 # Dynamic speed control
-                if abs(pp_steering_angle) > 0.1:
+                if abs(dnn_steering_angle) > 0.1:
                     # used this when cornering
                     controller_msg.linear.x = car_velocity_cornering_speed
 
@@ -474,7 +474,7 @@ def controller():
 
         
         '''
-        # Move base (ROS navigation stack)
+        # Move base (for ROS navigation stack)
         else:
             if dead_switch is True:
 
