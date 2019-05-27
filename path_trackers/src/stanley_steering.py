@@ -5,6 +5,10 @@
  
  Stanley Steering path tracker for following a path.
  
+ References:
+ http://isl.ecst.csuchico.edu/DOCS/darpa2005/DARPA%202005%20Stanley.pdf
+ https://www.ri.cmu.edu/pub_files/2009/2/Automatic_Steering_Methods_for_Autonomous_Automobile_Path_Tracking.pdf 
+ 
  Stanley Steering algorithm adapted from: 
  https://github.com/AtsushiSakai/PythonRobotics/tree/master/PathTracking/stanley_controller
 
