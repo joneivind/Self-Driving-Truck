@@ -5,6 +5,9 @@
  
  Pure Pursuit path tracker for following a path.
  
+ Reference: 
+ https://www.ri.cmu.edu/pub_files/2009/2/Automatic_Steering_Methods_for_Autonomous_Automobile_Path_Tracking.pdf 
+ 
  Pure Pursuit algorithm adapted from: 
  https://github.com/AtsushiSakai/PythonRobotics/tree/master/PathTracking/pure_pursuit
 
@@ -50,6 +53,7 @@ state = State(x=0.0, y=0.0, yaw=0.0, v=0.0)
 
 
 def pure_pursuit_control(state, course_x, course_y):
+    # adapted from: https://github.com/AtsushiSakai/PythonRobotics/tree/master/PathTracking/pure_pursuit
 
     # Get waypoint target index
     ind = calc_target_index(state, course_x, course_y)
@@ -81,6 +85,7 @@ def pure_pursuit_control(state, course_x, course_y):
 
 
 def calc_target_index(state, course_x, course_y):
+    # adapted from: https://github.com/AtsushiSakai/PythonRobotics/tree/master/PathTracking/pure_pursuit
 
     # search nearest point index
     dx = [state.x - icx for icx in course_x]
