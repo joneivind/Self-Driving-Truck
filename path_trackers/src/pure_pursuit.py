@@ -6,7 +6,7 @@
  Pure Pursuit path tracker for following a path.
  
  Pure Pursuit algorithm adapted from: 
- https://github.com/AtsushiSakai/PythonRobotics
+ https://github.com/AtsushiSakai/PythonRobotics/tree/master/PathTracking/pure_pursuit
 
  By Jon Eivind Stranden @ NTNU 2019
 
