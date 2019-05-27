@@ -12,11 +12,11 @@
 #include <geometry_msgs/Twist.h>
 #include <std_msgs/Int16.h>
 
-//// IMU ////
+/*** IMU ***/
 BNO080 IMU;
 uint32_t last_time = 0;
 
-//// Servo ////
+/*** Servo ***/
 PWMServo steering_servo, throttle_servo, gear_servo;  // Servo objects
 
 // Define PWM pins
@@ -29,8 +29,8 @@ int steering_pos = 90;
 int throttle_pos = 90;
 int gear_pos = 90; 
 
-//// LED STRIP ////
-// Note: led strip is connected to pin2
+/*** LED STRIP ***/
+// Note: the led strip is connected to pin 2
 const int num_leds = 4;
 int led_mode = 0;
 
@@ -49,13 +49,17 @@ int drawingMemory[num_leds*6];
 const int config = WS2811_GRB | WS2811_800kHz;
 OctoWS2811 leds(num_leds, displayMemory, drawingMemory, config);
 
+// Loop timer variables
 float long_loop_timer = millis();
 float short_loop_timer = millis();
 boolean long_time_passed = false;
 boolean short_time_passed = false;
 
-// For looping LED sequences
+
+/*** LED sequences ***/
 void led_control(int mode){
+  
+  // Loop timers
   if((millis() - long_loop_timer) >= 1000.0){
     long_loop_timer = millis();
     long_time_passed = !long_time_passed;
@@ -64,21 +68,23 @@ void led_control(int mode){
     short_loop_timer = millis();
     short_time_passed = !short_time_passed;
   }
-  // Off
+  
+  /* Off */
   if(mode==0){
     for (int i=0; i < leds.numPixels(); i++) {
       leds.setPixel(i, BLACK);
     }
     leds.show();
   } 
-  // Green
-  else if(mode==1){
+  
+  /* Green */
+  else if(mode==1){ // constant
     for (int i=0; i < leds.numPixels(); i++) {
       leds.setPixel(i, GREEN);  
     }
     leds.show();
   }
-  else if(mode==2 && long_time_passed){
+  else if(mode==2 && long_time_passed){ // blink
     for (int i=0; i < leds.numPixels(); i++) {
       leds.setPixel(i, GREEN);  
     }
@@ -90,14 +96,15 @@ void led_control(int mode){
     }
     leds.show();
   } 
-  // Blue
-  else if(mode==3){
+  
+  /* Blue */
+  else if(mode==3){ // constant
     for (int i=0; i < leds.numPixels(); i++) {
       leds.setPixel(i, BLUE);  
     }
     leds.show();
   }
-  else if(mode==4 && long_time_passed){
+  else if(mode==4 && long_time_passed){ // blink
     for (int i=0; i < leds.numPixels(); i++) {
       leds.setPixel(i, BLUE);  
     }
@@ -109,14 +116,15 @@ void led_control(int mode){
     }
     leds.show();
   } 
-  // Red
-  else if(mode==5){
+  
+  /* Red */
+  else if(mode==5){ // constant
     for (int i=0; i < leds.numPixels(); i++) {
       leds.setPixel(i, RED);  
     }
     leds.show();
   }   
-  else if(mode==6 && long_time_passed){
+  else if(mode==6 && long_time_passed){ // blink
     for (int i=0; i < leds.numPixels(); i++) {
       leds.setPixel(i, RED);  
     }
@@ -128,33 +136,37 @@ void led_control(int mode){
     }
     leds.show();
   }   
+  
   long_time_passed = false;
   short_time_passed = false;
 }
 
 
-//// ROS ////
+/*** ROS ***/
 ros::NodeHandle nh;
 ros::Time last_heartbeat_received;
 bool is_jetson_running = true;
 
-// ROS callback
+/* ROS callbacks */
 void controlCallback(const geometry_msgs::Twist& twist_msg){
+  // Servo and ESC control
   steering_pos  = twist_msg.angular.z;
   throttle_pos = twist_msg.linear.x;
   gear_pos = twist_msg.linear.z;
 }
-
 void heartbeatCallback(const std_msgs::Int16& Int16_msg){
+  // received heartbeat
   last_heartbeat_received = nh.now();
 }
-
 void ledCallback(const std_msgs::Int16& Int16_msg){
+  // set LED mode
   led_mode = Int16_msg.data;
 }
 
-//Publisher
+// New IMU msg
 sensor_msgs::Imu imu_msg;
+
+//Publisher
 ros::Publisher pub_imu("imu_data", &imu_msg);
 
 //Subscriptions
@@ -164,22 +176,14 @@ ros::Subscriber<std_msgs::Int16> sub_led("led_mode", &ledCallback );
 
 
 void setup() {
-
-  // Start leds
-  leds.begin();
-
-  //Start I2C
-  Wire.begin();
-
-  //Start IMU
-  IMU.begin();
+  leds.begin(); // Start leds  
+  Wire.begin(); //Start I2C  
+  IMU.begin(); //Start IMU
 
   delay(1000);
 
-  Serial.begin(57600);
-
-  //Increase I2C data rate to 400kHz
-  Wire.setClock(400000); 
+  #Serial.begin(57600); // Start serial comm  
+  Wire.setClock(400000); //Increase I2C data rate to 400kHz
 
   //Send data update every 50ms
   IMU.enableRotationVector(50); 
@@ -190,7 +194,8 @@ void setup() {
   steering_servo.attach(steering_servo_pin, 1000, 2000);
   throttle_servo.attach(throttle_servo_pin, 1000, 2000);
   gear_servo.attach(gear_servo_pin, 1000, 2000);
-
+  
+  // Init ROS node & topics
   nh.initNode();
   nh.advertise(pub_imu);
   nh.subscribe(sub_twist);
@@ -201,9 +206,10 @@ void setup() {
 
 void loop(){
 
-  led_control(led_mode);
-    
-  if((nh.now().sec - last_heartbeat_received.sec) <= 1){ // Check if heartbeat has been received within the last sec 
+  led_control(led_mode); // Set LED mode
+  
+  // Check if heartbeat has been received within the last sec, else stop the truck
+  if((nh.now().sec - last_heartbeat_received.sec) <= 1){ 
     steering_servo.write(steering_pos);
     throttle_servo.write(throttle_pos);
     gear_servo.write(gear_pos);
@@ -213,7 +219,8 @@ void loop(){
     throttle_servo.write(90);
     gear_servo.write(90);
   }
-
+  
+  // Publish IMU data on ROS topic
   if (IMU.dataAvailable() == true && nh.connected() && millis() - last_time >= 50 ){
 
     last_time = millis();
