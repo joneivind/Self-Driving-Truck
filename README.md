@@ -38,7 +38,7 @@ $ roslaunch car_cmd run.launch
 |rplidar_pwm_ros|Modified RPlidar ROS node with PWM motor control (https://github.com/davidbsp/rplidar_ros)
 |waypoint_logger|ROS node for recording a new path
 
-#### Also required:
+#### Also used:
 | Name | Link |
 | ------ | ------ |
 | Hector SLAM | [http://wiki.ros.org/hector_slam](http://wiki.ros.org/hector_slam) |
