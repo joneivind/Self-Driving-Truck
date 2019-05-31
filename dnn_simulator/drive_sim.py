@@ -1,7 +1,7 @@
 '''
 Based on:
 https://github.com/dolaameng/Udacity-SDC_Behavior-Cloning/tree/master/sdc
-https://blog.coast.ai/training-a-deep-learning-model-to-steer-a-car-in-99-lines-of-code-ba94e0456e6a
+https://gist.github.com/harvitronix/e4b49bdc3e017ee5f5465aa1b62ef4e2#file-drive-py
 '''
 
 import base64
