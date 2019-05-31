@@ -1,6 +1,6 @@
 '''
 Based on:
-https://blog.coast.ai/training-a-deep-learning-model-to-steer-a-car-in-99-lines-of-code-ba94e0456e6a
+https://gist.github.com/harvitronix/9ea862171b5a8188b7e6b5e587a3f6ad#file-train-py
 '''
 
 import csv, random, numpy as np
