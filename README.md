@@ -41,6 +41,7 @@ $ roslaunch car_cmd run.launch
 #### Also used:
 | Name | Link |
 | ------ | ------ |
+|ROS Kinetic|https://www.ros.org/|
 | Hector SLAM | [http://wiki.ros.org/hector_slam](http://wiki.ros.org/hector_slam) |
 |Joy|[http://wiki.ros.org/joy](http://wiki.ros.org/joy)|
 |ROS Serial|[http://wiki.ros.org/rosserial](http://wiki.ros.org/rosserial)|
