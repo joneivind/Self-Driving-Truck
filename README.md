@@ -42,10 +42,12 @@ $ roslaunch car_cmd run.launch
 | Name | Link |
 | ------ | ------ |
 |ROS Kinetic|https://www.ros.org/|
-| Hector SLAM (zip) | [http://wiki.ros.org/hector_slam](http://wiki.ros.org/hector_slam) |
-|Joy (zip)|[http://wiki.ros.org/joy](http://wiki.ros.org/joy)|
-|ROS Serial (zip)|[http://wiki.ros.org/rosserial](http://wiki.ros.org/rosserial)|
+|Hector SLAM| [http://wiki.ros.org/hector_slam](http://wiki.ros.org/hector_slam) |
+|Joy|[http://wiki.ros.org/joy](http://wiki.ros.org/joy)|
+|ROS Serial|[http://wiki.ros.org/rosserial](http://wiki.ros.org/rosserial)|
 |Udacity Self-Driving Car Simulator (Term 1, v2)|https://github.com/udacity/self-driving-car-sim|
+
+A modified version of Hector SLAM is attached as a zip.
 
 
 ##### Created for SINTEF Energy Research by Jon Eivind Stranden @ NTNU 2019
