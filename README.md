@@ -49,7 +49,7 @@ $ roslaunch car_cmd run.launch
 
 A modified version of Hector SLAM is attached as a zip.
 
-#### Demonstration video:
+### Demonstration video
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/N_L3MuPEHa8/0.jpg)](https://www.youtube.com/watch?v=N_L3MuPEHa8)
 
 
