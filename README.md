@@ -45,7 +45,7 @@ $ roslaunch car_cmd run.launch
 | Hector SLAM | [http://wiki.ros.org/hector_slam](http://wiki.ros.org/hector_slam) |
 |Joy|[http://wiki.ros.org/joy](http://wiki.ros.org/joy)|
 |ROS Serial|[http://wiki.ros.org/rosserial](http://wiki.ros.org/rosserial)|
-|Udacity Self-Driving Car Simulator|https://github.com/udacity/self-driving-car-sim|
+|Udacity Self-Driving Car Simulator (Term 1, v2)|https://github.com/udacity/self-driving-car-sim|
 
 
 ##### Created for SINTEF Energy Research by Jon Eivind Stranden @ NTNU 2019
