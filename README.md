@@ -49,5 +49,7 @@ $ roslaunch car_cmd run.launch
 
 A modified version of Hector SLAM is attached as a zip.
 
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/N_L3MuPEHa8/0.jpg)](https://www.youtube.com/watch?v=N_L3MuPEHa8)
+
 
 ##### Created for SINTEF Energy Research by Jon Eivind Stranden @ NTNU 2019
