@@ -10,7 +10,7 @@ It is part of a master thesis in cybernetics and robotics at NTNU 2019, and cont
 - Supervised Deep Learning steering controller with OpenCV
 - Lane Detector with steering controller (PID) and OpenCV
 
-The system is based on Ubuntu 16.04 with ROS Kinetic running on a Nvidia Jetson TX2. The truck itself is controlled by a Teensy 3.2 microcontroller. Other important components are the RPlidar A8M8 lidar and the Logitech C922 webcam.
+The system is based on Ubuntu 16.04 with ROS Kinetic running on a Nvidia Jetson TX2. The truck itself is controlled by a Teensy 3.2 microcontroller. Other components used are the RPlidar A8M8 lidar and the Logitech C922 webcam.
 
 #### Start-up
 To start the autonomous system, type:
